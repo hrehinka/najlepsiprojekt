@@ -11,6 +11,25 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class algoritmy {
 
+	public static Map<String, ArrayList<String>> generator(int n) {
+		Map<String, ArrayList<String>> map = new HashMap<>();
+		for (int i = 1; i < n + 1; i++) {
+			int numberOfvalues = (int) ((Math.random() * (n - 1)) + 1);
+			ArrayList<String> values = new ArrayList<>();
+			while (values.size() != numberOfvalues) {
+				int value = (int) ((Math.random() * (n - 1)) + 1);
+				if (!values.contains(Integer.toString(value))) {
+					values.add(Integer.toString(value));
+				}
+
+			}
+			map.put(Integer.toString(i), values);
+		}
+
+		return map;
+
+	}
+
 	public static double intersection(ArrayList<String> a, ArrayList<String> b) {
 		double size = 0;
 		for (String s : a) {
@@ -61,7 +80,12 @@ public class algoritmy {
 
 	}
 
-	public static Set<ArrayList<String>> rice_siff(CopyOnWriteArrayList<ArrayList<String>> C) {
+	public static Set<ArrayList<String>> rice_siff(Map<String, ArrayList<String>> table) {
+		CopyOnWriteArrayList<ArrayList<String>> C = new CopyOnWriteArrayList<>();
+		for (ArrayList<String> line : table.values()) {
+			C.add(line);
+		}
+
 		CopyOnWriteArrayList<ArrayList<String>> D = new CopyOnWriteArrayList<>();
 		D = (CopyOnWriteArrayList<ArrayList<String>>) C.clone();
 		double min = Double.MAX_VALUE;
@@ -102,8 +126,13 @@ public class algoritmy {
 
 	}
 
-	public static CopyOnWriteArraySet<ArrayList<String>> objectIntersection(Map<String, ArrayList<String>> table,
-			CopyOnWriteArraySet<ArrayList<String>> C) {
+	public static CopyOnWriteArraySet<ArrayList<String>> objectIntersection(Map<String, ArrayList<String>> table) {
+		CopyOnWriteArraySet<ArrayList<String>> C = new CopyOnWriteArraySet<ArrayList<String>>();
+		ArrayList<String> all = new ArrayList<>();
+		for (int i = 1; i < table.size() + 1; i++) {
+			all.add(Integer.toString(i));
+		}
+		C.add(all);
 		for (ArrayList<String> value : table.values()) {
 			for (ArrayList<String> c : C) {
 				ArrayList<String> intersection = new ArrayList<>();
@@ -122,55 +151,14 @@ public class algoritmy {
 	}
 
 	public static void main(String[] args) {
-		// object intersection inputs
+		// input generation
 		Map<String, ArrayList<String>> table = new HashMap<>();
-		table.put("a", new ArrayList<String>(Arrays.asList("1", "4", "5")));
-		table.put("b", new ArrayList<String>(Arrays.asList("2", "5", "6")));
-		table.put("c", new ArrayList<String>(Arrays.asList("2", "3", "4")));
-		table.put("d", new ArrayList<String>(Arrays.asList("1", "2", "4", "6")));
-		table.put("e", new ArrayList<String>(Arrays.asList("5", "6")));
-		CopyOnWriteArraySet<ArrayList<String>> C = new CopyOnWriteArraySet<>();
-		ArrayList<String> c = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5", "6"));
-		C.add(c);
-		System.out.println(objectIntersection(table, C));
-
-		Map<String, ArrayList<String>> table2 = new HashMap<>();
-		table2.put("x", new ArrayList<String>(Arrays.asList("1", "2")));
-		table2.put("y", new ArrayList<String>(Arrays.asList("2", "4")));
-		table2.put("z", new ArrayList<String>(Arrays.asList("1", "3")));
-		table2.put("w", new ArrayList<String>(Arrays.asList("2", "3", "4")));
-		CopyOnWriteArraySet<ArrayList<String>> C2 = new CopyOnWriteArraySet<>();
-		ArrayList<String> c2 = new ArrayList<String>(Arrays.asList("1", "2", "3", "4"));
-
-		C2.add(c2);
-		System.out.println(objectIntersection(table2, C2));
-
-		Map<String, ArrayList<String>> table3 = new HashMap<>();
-		table3.put("a", new ArrayList<String>(Arrays.asList("M", "F", "AJ")));
-		table3.put("b", new ArrayList<String>(Arrays.asList("F", "CH", "B", "SJ")));
-		table3.put("c", new ArrayList<String>(Arrays.asList("AJ", "SJ")));
-		table3.put("d", new ArrayList<String>(Arrays.asList("F", "CH", "B", "AJ", "SJ")));
-		table3.put("e", new ArrayList<String>(Arrays.asList("CH", "B", "AJ")));
-		CopyOnWriteArraySet<ArrayList<String>> C3 = new CopyOnWriteArraySet<>();
-		ArrayList<String> c3 = new ArrayList<String>(Arrays.asList("M", "F", "CH", "B", "AJ", "SJ"));
-		C3.add(c3);
-		System.out.println(objectIntersection(table3, C3));
+		table = generator(3);
+		System.out.println(table);
 
 		
-		// rice-siff algorithm input
-		ArrayList<String> lista = new ArrayList<String>(Arrays.asList("1", "4", "5"));
-		ArrayList<String> listb = new ArrayList<String>(Arrays.asList("2", "5", "6"));
-		ArrayList<String> listc = new ArrayList<String>(Arrays.asList("2", "3", "4"));
-		ArrayList<String> listd = new ArrayList<String>(Arrays.asList("1", "2", "4", "6"));
-		ArrayList<String> liste = new ArrayList<String>(Arrays.asList("5", "6"));
-		CopyOnWriteArrayList<ArrayList<String>> list = new CopyOnWriteArrayList<>();
-		list.add(lista);
-		list.add(listb);
-		list.add(listc);
-		list.add(listd);
-		list.add(liste);
-
-		System.out.println(rice_siff(list));
+		System.out.println(objectIntersection(table));
+		System.out.println(rice_siff(table));
 
 	}
 
