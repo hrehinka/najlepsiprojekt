@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 public class algoritmy {
 
@@ -103,11 +105,11 @@ public class algoritmy {
 
 		double suma_min = 0;
 		double suma_max = 0;
-		
-		if(row1.size() != row2.size()) {
-			return 0;
-		}
-		
+
+//		if (row1.size() != row2.size()) {
+//			return 0;
+//		}
+
 		for (int i = 0; i < row1.size(); i++) {
 			if (row1.get(i) < row2.get(i)) {
 				suma_min = suma_min + row1.get(i);
@@ -153,12 +155,14 @@ public class algoritmy {
 		ArrayList<String> indexkeys1 = new ArrayList<>();
 		ArrayList<String> indexkeys2 = new ArrayList<>();
 
+		System.out.println("JAGGARD " + jaggard_matrix);
+
 		// ma sa posledny prvok ktory ostane v D pridat do C?
 		while (D.size() > 1) {
 			int ikeys1 = 0;
 			int min1 = 0;
 			int min2 = 0;
-			System.out.println("While" + D);
+			System.out.println("While D " + D);
 			for (ArrayList<Double> l : D) {
 				int ikeys2 = 0;
 				for (ArrayList<Double> k : D) {
@@ -190,44 +194,66 @@ public class algoritmy {
 			min = Double.MAX_VALUE;
 			// ked je prienik prazna mnozina ma sa pridat do C ?
 
-
-
-			System.out.println("Matrix:" + jaggard_matrix);
+			System.out.println("D after removed :" + D);
+			System.out.println("Keys after removed :" + keys);
 
 			jaggard_matrix.remove(indexkeys1);
 			jaggard_matrix.remove(indexkeys2);
-			
-			System.out.println("Remove keys " + indexkeys1 + " " + indexkeys2);
 
+			System.out.println("Remove keys " + indexkeys1 + " " + indexkeys2);
 
 			ArrayList<String> pom = union1(indexkeys1, indexkeys2);
 			ArrayList<Double> pom2 = computeJaggard(pom, keys);
-			
-			int i = 0;
+
+			System.out.println("POM " + pom);
+			System.out.println("POM2" + pom2);
+
+			System.out.println("Jaggard matrix after removed :" + jaggard_matrix);
+			System.out.println("MIN1 " + min1);
+			System.out.println("MIN2 " + min2);
+
 			for (ArrayList<String> key : jaggard_matrix.keySet()) {
 				ArrayList<Double> values = jaggard_matrix.get(key);
-				
-				values.remove(min1);
 				values.remove(min2);
+				values.remove(min1);
+
 				jaggard_matrix.put(key, values);
 
 			}
-			
-			System.out.println("Matrix:" + jaggard_matrix);
 
-			System.out.println("D " + D);
-			
-			
-			System.out.println("pom2" + pom2);
-			if (!pom.isEmpty()) {
-				keys.add(pom);
-				jaggard_matrix.put(pom, pom2);
+			if (!jaggard_matrix.containsKey(pom)) {
+				System.out.println("pom2" + pom2);
+				if (!pom.isEmpty()) {
+					keys.add(pom);
+					jaggard_matrix.put(pom, pom2);
+				}
+				int k = 0;
+				for (ArrayList<String> key : jaggard_matrix.keySet()) {
+					ArrayList<Double> values = jaggard_matrix.get(key);
+					System.out.println("Matrix in for :" + jaggard_matrix);
+					if (key.equals(pom)) {
+						values.add((double) 1);
+						jaggard_matrix.put(key, values);
+					} else {
+						if (k < pom2.size()) {
+							values.add(pom2.get(k));
+							k++;
+							jaggard_matrix.put(key, values);
+						}
+					}
+
+				}
+
+				System.out.println("Matrix :" + jaggard_matrix);
 			}
+
 
 			D = new ArrayList<>();
 			for (ArrayList<Double> line : jaggard_matrix.values()) {
 				D.add(line);
 			}
+
+			System.out.println("D :" + jaggard_matrix);
 
 			C.add(pom);
 
@@ -257,7 +283,57 @@ public class algoritmy {
 		return newDistances;
 	}
 
-	public static Set<ArrayList<String>> rice_siff(Map<String, ArrayList<String>> table) {
+//	public static Set<ArrayList<String>> rice_siff(Map<String, ArrayList<String>> table) {
+//		CopyOnWriteArrayList<ArrayList<String>> C = new CopyOnWriteArrayList<>();
+//		for (ArrayList<String> line : table.values()) {
+//			C.add(line);
+//		}
+//
+//		System.out.println("RICE SIFF C " + C);
+//
+//		CopyOnWriteArrayList<ArrayList<String>> D = new CopyOnWriteArrayList<>();
+//		D = (CopyOnWriteArrayList<ArrayList<String>>) C.clone();
+//		System.out.println("RICE SIFF D " + D);
+//		double min = Double.MAX_VALUE;
+//		ArrayList<String> index1 = new ArrayList<>();
+//		ArrayList<String> index2 = new ArrayList<>();
+//		boolean firstIter = true;
+//		// ma sa posledny prvok ktory ostane v D pridat do C?
+//		while (D.size() > 1) {
+//			for (ArrayList<String> l : D) {
+//				for (ArrayList<String> k : D) {
+//					if (!l.equals(k)) {
+//						double distance = JaggardMetric(l, k);
+//						if (min > distance) {
+//							min = distance;
+//							index1 = l;
+//							index2 = k;
+//						}
+//
+//					}
+//				}
+//
+//			}
+//
+//		}
+//
+//		D.remove(index1);
+//		D.remove(index2);
+//		min = Double.MAX_VALUE;
+//		// ked je prienik prazna mnozina ma sa pridat do C ?
+//		ArrayList<String> pom = intersection2(index1, index2);
+//		if (!pom.isEmpty()) {
+//			D.add(pom);
+//		}
+//		C.add(pom);
+//
+//		Set<ArrayList<String>> output = new HashSet<>();
+//		output.addAll(C);
+//		return output;
+//
+//	}
+
+	public static Set<ArrayList<String>> rice_siff_without_duplicates(Map<String, ArrayList<String>> table) {
 		CopyOnWriteArrayList<ArrayList<String>> C = new CopyOnWriteArrayList<>();
 		for (ArrayList<String> line : table.values()) {
 			C.add(line);
@@ -265,6 +341,9 @@ public class algoritmy {
 
 		CopyOnWriteArrayList<ArrayList<String>> D = new CopyOnWriteArrayList<>();
 		D = (CopyOnWriteArrayList<ArrayList<String>>) C.clone();
+//		System.out.println("RICE SIFF D " + D);
+		D = removeDuplicates(D);
+//		System.out.println("RICE SIFF without duplicates D " + D);
 		double min = Double.MAX_VALUE;
 		ArrayList<String> index1 = new ArrayList<>();
 		ArrayList<String> index2 = new ArrayList<>();
@@ -277,11 +356,12 @@ public class algoritmy {
 					if (!l.equals(k)) {
 						double distance = JaggardMetric(l, k);
 						distances.add(distance);
-						if (min > distance) {
+						if (min >= distance) {
 							min = distance;
 							index1 = l;
 							index2 = k;
 						}
+
 					} else {
 						distances.add((double) 1);
 					}
@@ -312,6 +392,17 @@ public class algoritmy {
 
 	}
 
+	private static CopyOnWriteArrayList<ArrayList<String>> removeDuplicates(CopyOnWriteArrayList<ArrayList<String>> d) {
+		CopyOnWriteArrayList<ArrayList<String>> new_D = new CopyOnWriteArrayList<>();
+		for (ArrayList<String> element : d) {
+			if (!new_D.contains(element)) {
+
+				new_D.add(element);
+			}
+		}
+		return new_D;
+	}
+
 	public static CopyOnWriteArraySet<ArrayList<String>> objectIntersection(Map<String, ArrayList<String>> table) {
 		CopyOnWriteArraySet<ArrayList<String>> C = new CopyOnWriteArraySet<ArrayList<String>>();
 		ArrayList<String> all = new ArrayList<>();
@@ -340,14 +431,29 @@ public class algoritmy {
 		// input generation
 		Map<String, ArrayList<String>> table = new HashMap<>();
 		table = generator(4);
-		System.out.println(table);
+		System.out.println("KONTEXT " + table);
 
-		// System.out.println(objectIntersection(table));
-		System.out.println(rice_siff(table));
+//		System.out.println(objectIntersection(table));
+//		System.out.println("RICE - SIFF RESULT WITH DUPLICATES " + rice_siff_without_duplicates(table));
+
+		System.out.println("JAGGARD MATRIX " + rice_siff_without_duplicates(table));
 
 		System.out.println(jaggard_matrix);
 
-		System.out.println(rice_siff_fuzzy(jaggard_matrix));
+		System.out.println("RICE - SIFF FUZZY RESULT " + rice_siff_fuzzy(jaggard_matrix));
+
+//		ArrayList<String> a = new ArrayList<String>(Arrays.asList("1", "3"));
+//		ArrayList<String> b = new ArrayList<String>(Arrays.asList("3"));
+//		ArrayList<String> c = new ArrayList<String>(Arrays.asList("2"));
+//		ArrayList<Double> a1 = new ArrayList<Double>(Arrays.asList(1.0, 1.0, 0.5));
+//		ArrayList<Double> b2 = new ArrayList<Double>(Arrays.asList(1.0, 0.5, 1.0));
+//		ArrayList<Double> c3 = new ArrayList<Double>(Arrays.asList(1.0, 1.0, 1.0));
+//		Map<ArrayList<String>, ArrayList<Double>> map = new HashMap<>();
+//		map.put(c, c3);
+//		map.put(b, b2);
+//		map.put(a, a1);
+
+//		System.out.println(map);
 
 	}
 
